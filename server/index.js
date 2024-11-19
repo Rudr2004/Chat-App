@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 });
 
 //Api End Points
-app.use("/api", router);
+app.use(router);
 
 connect().then(() => {
   server.listen(PORT, () => {

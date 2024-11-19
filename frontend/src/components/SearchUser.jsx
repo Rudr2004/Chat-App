@@ -14,7 +14,7 @@ const SearchUser = ({onClose}) => {
 
 
     const handleSearchUser = async()=>{
-        const URL = `${import.meta.env.VITE_BACKEND_URL}/api/search-user`
+        const URL = `${import.meta.env.VITE_BACKEND_URL}/search-user`
         try {
             setLoading(true)
             const response = await axios.post(URL,{

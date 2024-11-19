@@ -17,7 +17,7 @@ const Home = () => {
   console.log('user',user)
   const fetchUserDetails = async()=>{
     try {
-        const URL = `${import.meta.env.VITE_BACKEND_URL}/api/user-details`
+        const URL = `${import.meta.env.VITE_BACKEND_URL}/user-details`
         const response = await axios({
           url : URL,
           withCredentials : true
