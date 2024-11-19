@@ -39,7 +39,7 @@ const CheckPasswordPage = () => {
     e.preventDefault()
     e.stopPropagation()
 
-    const URL = `http://localhost:8000/api/password`
+    const URL = `${import.meta.env.VITE_BACKEND_URL}/api/password`
 
     try {
         const response = await axios({

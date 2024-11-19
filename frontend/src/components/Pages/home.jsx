@@ -17,7 +17,7 @@ const Home = () => {
   console.log('user',user)
   const fetchUserDetails = async()=>{
     try {
-        const URL = `http://localhost:8000/api/user-details`
+        const URL = `${import.meta.env.VITE_BACKEND_URL}/api/user-details`
         const response = await axios({
           url : URL,
           withCredentials : true
@@ -41,7 +41,7 @@ const Home = () => {
 
   /***socket connection */
   useEffect(()=>{
-    const URL = "http://localhost:8000"
+    const URL = `${import.meta.env.VITE_BACKEND_URL}`
     const socketConnection = io(URL,{
       auth : {
         token : localStorage.getItem('token')

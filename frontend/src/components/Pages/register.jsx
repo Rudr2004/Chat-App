@@ -51,7 +51,7 @@ const RegisterPage = () => {
     e.preventDefault()
     e.stopPropagation()
 
-    const URL = `http://localhost:8000/api/register`
+    const URL = `${import.meta.env.VITE_BACKEND_URL}/api/register`
 
     try {
         const response = await axios.post(URL,data)
