@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Avatar from './Avtar.jsx'; // Assuming Avatar component is implemented correctly
-import uploadFile from '../helper/uploadfile.jsx'; // Ensure this function is defined properly
-import Divider from './Divider.jsx'; // Assuming Divider component is implemented correctly
+import Avatar from './Avtar.jsx'; 
+import uploadFile from '../helper/uploadfile.jsx'; 
+import Divider from './Divider.jsx'; 
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../redux/userSlice'; // Ensure this action is defined in your Redux slice
+import { setUser } from '../redux/userSlice';
 
 const EditUserDetails = ({ onClose, user }) => {
     const [data, setData] = useState({
