@@ -10,9 +10,11 @@ const app = express();
 
 /***socket connection */
 const server = http.createServer(app);
+const allowedOrigins = ["http://localhost:5173", "https://msg-app.netlify.app"];
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL,
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
     credentials: true,
   },
 });
