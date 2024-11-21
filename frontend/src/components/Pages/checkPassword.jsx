@@ -58,7 +58,7 @@ const CheckPasswordPage = () => {
                 setData({
                     password: "",
                 });
-                navigate('/home');
+                navigate('/');
             }
         } catch (error) {
             const message = error?.response?.data?.message || "An error occurred";
