@@ -7,7 +7,10 @@ const { app, server } = require("./socket/index.js");
 require("dotenv").config();
 
 //const app = express();
-const allowedOrigins = ["http://localhost:5173", process.env.FRONTEND_URL];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://msg-app.netlify.app/",
+];
 app.use(
   cors({
     origin: allowedOrigins,
