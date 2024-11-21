@@ -10,7 +10,6 @@ const CheckPasswordPage = () => {
     const [data, setData] = useState({
         password: ""
     });
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
@@ -24,10 +23,12 @@ const CheckPasswordPage = () => {
     const handleOnChange = (e) => {
         const { name, value } = e.target;
 
-        setData((prev) => ({
-            ...prev,
-            [name]: value
-        }));
+        setData((prev) => {
+            return {
+                ...prev,
+                [name]: value
+            };
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -37,19 +38,16 @@ const CheckPasswordPage = () => {
         const URL = `${import.meta.env.VITE_BACKEND_URL}/password`;
         const userId = location?.state?._id || '';
 
-        // Basic password validation
-        if (data.password.length < 6) {
-            toast.error("Password must be at least 6 characters long.");
-            return;
-        }
-
-        setLoading(true); // Set loading state
-
         try {
-            const response = await axios.post(URL, {
-                userId: userId,
-                password: data.password
-            }, { withCredentials: true });
+            const response = await axios({
+                method: 'post',
+                url: URL,
+                data: {
+                    userId: userId,
+                    password: data.password
+                },
+                withCredentials: true
+            });
 
             toast.success(response.data.message);
 
@@ -57,14 +55,14 @@ const CheckPasswordPage = () => {
                 dispatch(setToken(response?.data?.token));
                 localStorage.setItem('token', response?.data?.token);
 
-                setData({ password: "" });
+                setData({
+                    password: "",
+                });
                 navigate('/');
             }
         } catch (error) {
             const message = error?.response?.data?.message || "An error occurred";
             toast.error(message);
-        } finally {
-            setLoading(false); // Reset loading state
         }
     };
 
@@ -98,10 +96,9 @@ const CheckPasswordPage = () => {
 
                     <button
                         type="submit"
-                        className={`bg-primary text-lg px-4 py-1 hover:bg-secondary rounded mt-2 font-bold text-white leading-relaxed tracking-wide ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        disabled={loading} // Disable button when loading
+                        className='bg-primary text-lg px-4 py-1 hover:bg-secondary rounded mt-2 font-bold text-white leading-relaxed tracking-wide'
                     >
-                        {loading ? 'Logging in...' : 'Login'}
+                        Login
                     </button>
                 </form>
 
