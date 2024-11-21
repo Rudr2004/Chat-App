@@ -34,7 +34,7 @@ const CheckPasswordPage = () => {
         e.stopPropagation();
 
         const URL = `${import.meta.env.VITE_BACKEND_URL}/password`;
-        const userId = location?.state?._id || '';
+        const userId = location?.state?.userId || '';
 
         try {
             const response = await axios.post(URL, {
