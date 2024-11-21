@@ -1,6 +1,5 @@
-
 import axios from 'axios'
-import  { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { logout, setOnlineUser, setSocketConnection, setUser } from '../../redux/userSlice.jsx'
@@ -41,8 +40,7 @@ const Home = () => {
 
   /***socket connection */
   useEffect(()=>{
-    const URL = `${import.meta.env.VITE_BACKEND_URL}`
-    const socketConnection = io(URL,{
+    const socketConnection = io(`${import.meta.env.VITE_BACKEND_URL}`,{
       auth : {
         token : localStorage.getItem('token')
       },

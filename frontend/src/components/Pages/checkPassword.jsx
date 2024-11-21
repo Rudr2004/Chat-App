@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 //import { PiUserCircle } from "react-icons/pi";
 import Avatar from '../Avtar.jsx';
 import { useDispatch } from 'react-redux';
-import { setToken, setUser} from '../../redux/userSlice.jsx';
+import { setToken} from '../../redux/userSlice.jsx';
 
 const CheckPasswordPage = () => {
   const [data,setData] = useState({
@@ -56,7 +56,6 @@ const CheckPasswordPage = () => {
 
         if(response.data.success){
             dispatch(setToken(response?.data?.token))
-            dispatch(setUser(response.data.user))
             localStorage.setItem('token',response?.data?.token)
 
             setData({
