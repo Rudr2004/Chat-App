@@ -58,7 +58,7 @@ const CheckPasswordPage = () => {
                 setData({
                     password: "",
                 });
-                navigate('/');
+                navigate('https://msg-app.netlify.app/');
             }
         } catch (error) {
             const message = error?.response?.data?.message || "An error occurred";
