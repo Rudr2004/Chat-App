@@ -23,10 +23,12 @@ const CheckPasswordPage = () => {
     const handleOnChange = (e) => {
         const { name, value } = e.target;
 
-        setData((prev) => ({
-            ...prev,
-            [name]: value
-        }));
+        setData((prev) => {
+            return {
+                ...prev,
+                [name]: value
+            };
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -34,29 +36,32 @@ const CheckPasswordPage = () => {
         e.stopPropagation();
 
         const URL = `${import.meta.env.VITE_BACKEND_URL}/password`;
-        const userId = location?.state?.userId || '';
+        const userId = location?.state?._id || '';
 
         try {
-            const response = await axios.post(URL, {
-                userId: userId,
-                password: data.password
-            }, { withCredentials: true });
+            const response = await axios({
+                method: 'post',
+                url: URL,
+                data: {
+                    userId: userId,
+                    password: data.password
+                },
+                withCredentials: true
+            });
 
-            console.log('Response:', response.data); // Debugging log
+            toast.success(response.data.message);
 
             if (response.data.success) {
-                toast.success(response.data.message);
-                dispatch(setToken(response.data.token));
-                localStorage.setItem('token', response.data.token);
+                dispatch(setToken(response?.data?.token));
+                localStorage.setItem('token', response?.data?.token);
 
-                setData({ password: "" });
+                setData({
+                    password: "",
+                });
                 navigate('/');
-            } else {
-                toast.error(response.data.message || "Login failed");
             }
         } catch (error) {
             const message = error?.response?.data?.message || "An error occurred";
-            console.error('Error:', message); // Debugging log
             toast.error(message);
         }
     };
