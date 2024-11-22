@@ -19,7 +19,7 @@ const messageSchema = new mongoose.Schema(
       default: false,
     },
     msgByUserId: {
-      type: String,
+      type: mongoose.Schema.ObjectId,
       required: true,
       ref: "User",
     },
@@ -32,18 +32,18 @@ const messageSchema = new mongoose.Schema(
 const conversationSchema = new mongoose.Schema(
   {
     sender: {
-      type: String,
+      type: mongoose.Schema.ObjectId,
       required: true,
       ref: "User",
     },
     receiver: {
-      type: String,
+      type: mongoose.Schema.ObjectId,
       required: true,
       ref: "User",
     },
     messages: [
       {
-        type: String,
+        type: mongoose.Schema.ObjectId,
         ref: "Message",
       },
     ],
