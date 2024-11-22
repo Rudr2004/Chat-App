@@ -38,6 +38,11 @@ io.on("connection", async (socket) => {
 
   socket.on("message-page", async (userId) => {
     console.log("userId", userId);
+    // Validate userId
+    if (!ObjectId.isValid(userId)) {
+      console.error("Invalid userId format:", userId);
+      return; // Exit if invalid
+    }
     const userDetails = await UserModel.findById(userId).select("-password");
 
     const payload = {
@@ -64,12 +69,21 @@ io.on("connection", async (socket) => {
 
   //new message
   socket.on("new message", async (data) => {
-    //check conversation is available both user
+    // Validate sender and receiver IDs
+    if (!ObjectId.isValid(data?.sender) || !ObjectId.isValid(data?.receiver)) {
+      console.error(
+        "Invalid sender or receiver ID format:",
+        data.sender,
+        data.receiver
+      );
+      return; // Exit if invalid
+    }
 
+    // Proceed with your logic
     let conversation = await ConversationModel.findOne({
       $or: [
-        { sender: data?.sender, receiver: data?.receiver },
-        { sender: data?.receiver, receiver: data?.sender },
+        { sender: ObjectId(data?.sender), receiver: ObjectId(data?.receiver) },
+        { sender: ObjectId(data?.receiver), receiver: ObjectId(data?.sender) },
       ],
     });
 
@@ -129,14 +143,19 @@ io.on("connection", async (socket) => {
     socket.emit("conversation", conversation);
   });
 
-  socket.on("seen", async (msgByUserId) => {
+  socket.on("seen", async (msgByUser Id) => {
+    // Validate msgByUser Id
+    if (!ObjectId.isValid(msgByUser Id)) {
+        console.error("Invalid msgByUser Id format:", msgByUser Id);
+        return; // Exit if invalid
+    }
+    
     let conversation = await ConversationModel.findOne({
-      $or: [
-        { sender: user?._id, receiver: msgByUserId },
-        { sender: msgByUserId, receiver: user?._id },
-      ],
+        $or: [
+            { sender: ObjectId(user?._id), receiver: ObjectId(msgByUser Id) },
+            { sender: ObjectId(msgByUser Id), receiver: ObjectId(user?._id) },
+        ],
     });
-
     const conversationMessageId = conversation?.messages || [];
 
     const updateMessages = await MessageModel.updateMany(
