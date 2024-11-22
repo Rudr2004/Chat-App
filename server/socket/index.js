@@ -13,7 +13,7 @@ const server = http.createServer(app);
 const allowedOrigins = ["http://localhost:5173", "https://msg-app.netlify.app"];
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -31,11 +31,11 @@ io.on("connection", async (socket) => {
   const user = await getUserDetailsFromToken(token);
 
   //create a room
-  socket.join(user?._id);
-  onlineUser.add(user?._id);
+  socket.join(user?._id?.toString());
+  onlineUser.add(user?._id?.toString());
   if (user && user._id) {
-    socket.join(user._id);
-    onlineUser.add(user._id);
+    socket.join(user._id?.toString());
+    onlineUser.add(user._id?.toString());
   } else {
     console.error("Error: User or User ID is undefined", { user });
   }
