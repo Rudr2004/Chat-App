@@ -27,6 +27,7 @@ const Home = () => {
         if(response.data.data.logout){
             dispatch(logout())
             navigate("/email")
+            return;
         }
         console.log("current user Details",response)
     } catch (error) {
@@ -40,7 +41,7 @@ const Home = () => {
 
   /***socket connection */
   useEffect(()=>{
-    const URL = `${import.meta.env.VITE_BACKEND_URL}`
+    const URL = `${import.meta.env.VITE_BACKEND_URL}/`
     const socketConnection = io(URL,{
       auth : {
         token : localStorage.getItem('token')
