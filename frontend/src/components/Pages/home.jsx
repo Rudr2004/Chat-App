@@ -41,7 +41,7 @@ const Home = () => {
 
   /***socket connection */
   useEffect(()=>{
-    const URL = `${import.meta.env.VITE_BACKEND_URL}/home`
+    const URL = `${import.meta.env.VITE_BACKEND_URL}`
     const socketConnection = io(URL,{
       auth : {
         token : localStorage.getItem('token')
