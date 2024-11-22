@@ -38,7 +38,8 @@ io.on("connection", async (socket) => {
   // Join user room
   socket.join(user._id.toString());
   onlineUser.add(user._id.toString());
-  io.emit("onlineUser ", Array.from(onlineUser));
+  console.log("Online Users:", Array.from(onlineUser)); // Debugging log
+  io.emit("onlineUser ", Array.from(onlineUser)); // Emit without extra space
 
   socket.on("message-page", async (userId) => {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -139,7 +140,7 @@ io.on("connection", async (socket) => {
 
   socket.on("sidebar", async (currentUserId) => {
     if (!mongoose.Types.ObjectId.isValid(currentUserId)) {
-      console.error("Invalid currentUser Id:", currentUserId);
+      console.error("Invalid currentUser  Id:", currentUserId);
       return;
     }
 
@@ -149,7 +150,7 @@ io.on("connection", async (socket) => {
 
   socket.on("seen", async (msgByUserId) => {
     if (!mongoose.Types.ObjectId.isValid(msgByUserId)) {
-      console.error("Invalid msgByUser Id:", msgByUserId);
+      console.error("Invalid msgByUser  Id:", msgByUserId);
       return;
     }
 
@@ -184,7 +185,8 @@ io.on("connection", async (socket) => {
   socket.on("disconnect", () => {
     onlineUser.delete(user._id.toString());
     console.log("Disconnected user:", socket.id);
-    io.emit("onlineUser ", Array.from(onlineUser)); // Update online users list
+    console.log("Updated Online Users:", Array.from(onlineUser)); // Debugging log
+    io.emit("onlineUser ", Array.from(onlineUser)); // Update online users list without extra space
   });
 });
 
