@@ -19,10 +19,9 @@ const messageSchema = new mongoose.Schema(
       default: false,
     },
     msgByUserId: {
-      // Corrected field name to match the schema definition
-      type: mongoose.Schema.Types.ObjectId, // Corrected ObjectId definition
+      type: mongoose.Schema.ObjectId,
       required: true,
-      ref: "User ",
+      ref: "User",
     },
   },
   {
@@ -33,18 +32,18 @@ const messageSchema = new mongoose.Schema(
 const conversationSchema = new mongoose.Schema(
   {
     sender: {
-      type: mongoose.Schema.Types.ObjectId, // Corrected ObjectId definition
+      type: mongoose.Schema.ObjectId,
       required: true,
-      ref: "User ",
+      ref: "User",
     },
     receiver: {
-      type: mongoose.Schema.Types.ObjectId, // Corrected ObjectId definition
+      type: mongoose.Schema.ObjectId,
       required: true,
-      ref: "User ",
+      ref: "User",
     },
     messages: [
       {
-        type: mongoose.Schema.Types.ObjectId, // Corrected ObjectId definition
+        type: mongoose.Schema.ObjectId,
         ref: "Message",
       },
     ],
@@ -57,41 +56,7 @@ const conversationSchema = new mongoose.Schema(
 const MessageModel = mongoose.model("Message", messageSchema);
 const ConversationModel = mongoose.model("Conversation", conversationSchema);
 
-// Function to create a message and a conversation
-async function createMessageAndConversation(senderId, receiverId, messageText) {
-  // Validate ObjectId
-  if (
-    !mongoose.Types.ObjectId.isValid(senderId) ||
-    !mongoose.Types.ObjectId.isValid(receiverId)
-  ) {
-    throw new Error("Invalid User ID");
-  }
-
-  // Create a new message
-  const message = new MessageModel({
-    text: messageText,
-    msgByUserId: senderId, // This should be a valid ObjectId
-  });
-
-  // Save the message to the database
-  const savedMessage = await message.save();
-
-  // Create a new conversation
-  const conversation = new ConversationModel({
-    sender: senderId, // This should be a valid ObjectId
-    receiver: receiverId, // This should be a valid ObjectId
-    messages: [savedMessage._id], // Store the ID of the saved message
-  });
-
-  // Save the conversation to the database
-  const savedConversation = await conversation.save();
-
-  return { message: savedMessage, conversation: savedConversation };
-}
-
-// Exporting models and the function
 module.exports = {
   MessageModel,
   ConversationModel,
-  createMessageAndConversation,
 };
