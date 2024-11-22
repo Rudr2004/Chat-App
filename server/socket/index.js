@@ -34,8 +34,8 @@ io.on("connection", async (socket) => {
   socket.join(user?._id);
   onlineUser.add(user?._id?.toString());
   if (user && user._id) {
-    socket.join(user._id);
-    onlineUser.add(user._id.toString());
+    socket.join(user._id?.toString());
+    onlineUser.add(user._id?.toString());
   } else {
     console.error("Error: User or User ID is undefined", { user });
   }
