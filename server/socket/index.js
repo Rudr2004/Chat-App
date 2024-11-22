@@ -32,10 +32,10 @@ io.on("connection", async (socket) => {
 
   //create a room
   socket.join(user?._id);
-  onlineUser.add(user?._id);
+  onlineUser.add(user?._id?.toString());
   if (user && user._id) {
     socket.join(user._id);
-    onlineUser.add(user._id);
+    onlineUser.add(user._id.toString());
   } else {
     console.error("Error: User or User ID is undefined", { user });
   }
