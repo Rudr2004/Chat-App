@@ -35,7 +35,7 @@ const CheckPasswordPage = () => {
         e.preventDefault();
         e.stopPropagation();
 
-        const URL = `${import.meta.env.VITE_BACKEND_URL}/password`;
+        const URL = `${import.meta.env.VITE_BACKEND_URL}password`;
         const userId = location?.state?._id || '';
 
         try {
