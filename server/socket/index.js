@@ -42,37 +42,45 @@ io.on("connection", async (socket) => {
   io.emit("onlineUser ", Array.from(onlineUser)); // Emit without extra space
 
   socket.on("message-page", async (userId) => {
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      console.error("Invalid userId:", userId);
-      return;
+    const isValidUserId = mongoose.Types.ObjectId.isValid(userId);
+
+    if (isValidUserId) {
+      const userDetails = await UserModel.findById(userId).select("-password");
+      if (!userDetails) {
+        console.error("User  not found:", userId);
+        return;
+      }
+
+      const payload = {
+        _id: userDetails._id,
+        name: userDetails.name,
+        email: userDetails.email,
+        profile_pic: userDetails.profile_pic,
+        online: onlineUser.has(userId),
+      };
+      socket.emit("message-user", payload);
+
+      // Get previous messages
+      const getConversationMessage = await ConversationModel.findOne({
+        $or: [
+          { sender: user._id, receiver: userId },
+          { sender: userId, receiver: user._id },
+        ],
+      })
+        .populate("messages")
+        .sort({ updatedAt: -1 });
+
+      socket.emit("message", getConversationMessage?.messages || []);
+    } else {
+      // If userId is invalid, still check if the user is online
+      const isOnline = onlineUser.has(userId);
+      socket.emit("message-user", {
+        online: isOnline,
+        message: isOnline
+          ? "User  is online but ID is invalid."
+          : "User  is offline and ID is invalid.",
+      });
     }
-
-    const userDetails = await UserModel.findById(userId).select("-password");
-    if (!userDetails) {
-      console.error("User  not found:", userId);
-      return;
-    }
-
-    const payload = {
-      _id: userDetails._id,
-      name: userDetails.name,
-      email: userDetails.email,
-      profile_pic: userDetails.profile_pic,
-      online: onlineUser.has(userId),
-    };
-    socket.emit("message-user", payload);
-
-    // Get previous messages
-    const getConversationMessage = await ConversationModel.findOne({
-      $or: [
-        { sender: user._id, receiver: userId },
-        { sender: userId, receiver: user._id },
-      ],
-    })
-      .populate("messages")
-      .sort({ updatedAt: -1 });
-
-    socket.emit("message", getConversationMessage?.messages || []);
   });
 
   socket.on("new message", async (data) => {
