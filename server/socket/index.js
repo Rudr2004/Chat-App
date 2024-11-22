@@ -8,43 +8,42 @@ const getConversation = require("../helper/getconversation.js");
 
 const app = express();
 
-// Create an HTTP server
+/***socket connection */
 const server = http.createServer(app);
-
-// CORS settings
 const allowedOrigins = ["http://localhost:5173", "https://msg-app.netlify.app"];
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins, // Specify allowed origins
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
-// Online user set
+//online user
 const onlineUser = new Set();
 
 io.on("connection", async (socket) => {
-  console.log("Connected User: ", socket.id);
+  console.log("connect User ", socket.id);
 
   const token = socket.handshake.auth.token;
 
-  // Get current user details
+  //current user details
   const user = await getUserDetailsFromToken(token);
 
+  //create a room
+  socket.join(user?._id?.toString());
+  onlineUser.add(user?._id?.toString());
   if (user && user._id) {
-    socket.join(user._id.toString());
-    onlineUser.add(user._id.toString());
-    io.emit("onlineUser ", Array.from(onlineUser));
+    socket.join(user._id?.toString());
+    onlineUser.add(user._id?.toString());
   } else {
     console.error("Error: User or User ID is undefined", { user });
-    socket.disconnect(); // Disconnect if user is not valid
-    return;
   }
 
-  // Handle message page request
+  io.emit("onlineUser", Array.from(onlineUser));
+
   socket.on("message-page", async (userId) => {
-    console.log("User  ID requested for messages:", userId);
+    console.log("userId", userId);
     const userDetails = await UserModel.findById(userId).select("-password");
 
     const payload = {
@@ -56,7 +55,7 @@ io.on("connection", async (socket) => {
     };
     socket.emit("message-user", payload);
 
-    // Get previous messages
+    //get previous message
     const getConversationMessage = await ConversationModel.findOne({
       $or: [
         { sender: user?._id, receiver: userId },
@@ -69,8 +68,10 @@ io.on("connection", async (socket) => {
     socket.emit("message", getConversationMessage?.messages || []);
   });
 
-  // Handle new message
+  //new message
   socket.on("new message", async (data) => {
+    //check conversation is available both user
+
     let conversation = await ConversationModel.findOne({
       $or: [
         { sender: data?.sender, receiver: data?.receiver },
@@ -78,9 +79,9 @@ io.on("connection", async (socket) => {
       ],
     });
 
-    // Create a new conversation if it doesn't exist
+    //if conversation is not available
     if (!conversation) {
-      const createConversation = new ConversationModel({
+      const createConversation = await ConversationModel({
         sender: data?.sender,
         receiver: data?.receiver,
       });
@@ -95,9 +96,11 @@ io.on("connection", async (socket) => {
     });
     const saveMessage = await message.save();
 
-    await ConversationModel.updateOne(
+    const updateConversation = await ConversationModel.updateOne(
       { _id: conversation?._id },
-      { $push: { messages: saveMessage?._id } }
+      {
+        $push: { messages: saveMessage?._id },
+      }
     );
 
     const getConversationMessage = await ConversationModel.findOne({
@@ -115,7 +118,7 @@ io.on("connection", async (socket) => {
       getConversationMessage?.messages || []
     );
 
-    // Send conversation
+    //send conversation
     const conversationSender = await getConversation(data?.sender);
     const conversationReceiver = await getConversation(data?.receiver);
 
@@ -123,14 +126,15 @@ io.on("connection", async (socket) => {
     io.to(data?.receiver).emit("conversation", conversationReceiver);
   });
 
-  // Handle sidebar request
+  //sidebar
   socket.on("sidebar", async (currentUserId) => {
-    console.log("Current user for sidebar:", currentUserId);
+    console.log("current user", currentUserId);
+
     const conversation = await getConversation(currentUserId);
+
     socket.emit("conversation", conversation);
   });
 
-  // Handle message seen status
   socket.on("seen", async (msgByUserId) => {
     let conversation = await ConversationModel.findOne({
       $or: [

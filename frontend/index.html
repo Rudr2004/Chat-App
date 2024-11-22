@@ -11,34 +11,6 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
-  <script>
-    // Check if WebSocket is supported
-    if ("WebSocket" in window) {
-      const socket = io("https://chat-app-4cyr.onrender.com");
-
-      socket.on("connect", () => {
-        console.log("Connected to WebSocket server");
-      });
-
-      socket.on("message", (data) => {
-        const messagesDiv = document.getElementById("messages");
-        messagesDiv.innerHTML += `<p>${data}</p>`;
-      });
-
-      document.getElementById("send").onclick = function () {
-        const messageInput = document.getElementById("message");
-        const message = messageInput.value;
-        socket.emit("new message", message);
-        messageInput.value = ''; // Clear input after sending
-      };
-
-      socket.on("disconnect", () => {
-        console.log("Disconnected from WebSocket server");
-      });
-    } else {
-      alert("WebSocket is not supported by your browser.");
-    }
-  </script>
 </body>
 
 </html>
