@@ -5,7 +5,6 @@ const getUserDetailsFromToken = require("../helper/getuserDetails.js");
 const UserModel = require("../model/Usermodel.js");
 const { ConversationModel, MessageModel } = require("../model/Conversation.js");
 const getConversation = require("../helper/getconversation.js");
-const mongoose = require("mongoose");
 
 const app = express();
 
@@ -32,15 +31,8 @@ io.on("connection", async (socket) => {
   const user = await getUserDetailsFromToken(token);
 
   //create a room
-  socket.join(user?._id?.toString());
+  socket.join(user?._id.toString());
   onlineUser.add(user?._id?.toString());
-  if (user && user._id) {
-    const userId = new mongoose.Types.ObjectId(user._id);
-    socket.join(userId.toString());
-    onlineUser.add(user._id?.toString());
-  } else {
-    console.error("Error: User or User ID is undefined", { user });
-  }
 
   io.emit("onlineUser", Array.from(onlineUser));
 
