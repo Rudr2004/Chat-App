@@ -143,18 +143,18 @@ io.on("connection", async (socket) => {
     socket.emit("conversation", conversation);
   });
 
-  socket.on("seen", async (msgByUser Id) => {
+  socket.on("seen", async (msgByUserId) => {
     // Validate msgByUser Id
-    if (!ObjectId.isValid(msgByUser Id)) {
-        console.error("Invalid msgByUser Id format:", msgByUser Id);
-        return; // Exit if invalid
+    if (!ObjectId.isValid(msgByUserId)) {
+      console.error("Invalid msgByUser Id format:", msgByUserId);
+      return; // Exit if invalid
     }
-    
+
     let conversation = await ConversationModel.findOne({
-        $or: [
-            { sender: ObjectId(user?._id), receiver: ObjectId(msgByUser Id) },
-            { sender: ObjectId(msgByUser Id), receiver: ObjectId(user?._id) },
-        ],
+      $or: [
+        { sender: ObjectId(user?._id), receiver: ObjectId(msgByUserId) },
+        { sender: ObjectId(msgByUserId), receiver: ObjectId(user?._id) },
+      ],
     });
     const conversationMessageId = conversation?.messages || [];
 
