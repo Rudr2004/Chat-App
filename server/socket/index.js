@@ -47,7 +47,7 @@ io.on("connection", async (socket) => {
     const userDetails = await UserModel.findById(userId).select("-password");
 
     const payload = {
-      _id: userDetails?._id,
+      _id: userDetails?._id.toString(),
       name: userDetails?.name,
       email: userDetails?.email,
       profile_pic: userDetails?.profile_pic,
@@ -146,9 +146,9 @@ io.on("connection", async (socket) => {
     const conversationMessageId = conversation?.messages || [];
 
     const updateMessages = await MessageModel.updateMany(
-      { _id: { $in: conversationMessageId }, msgByUserId: msgByUserId },
+      { _id: { $in: conversationMessageId.map(id => mongoose.Types.ObjectId(id)) }, msgByUser Id: msgByUser Id },
       { $set: { seen: true } }
-    );
+  );
 
     //send conversation
     const conversationSender = await getConversation(user?._id?.toString());
