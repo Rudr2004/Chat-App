@@ -146,9 +146,14 @@ io.on("connection", async (socket) => {
     const conversationMessageId = conversation?.messages || [];
 
     const updateMessages = await MessageModel.updateMany(
-      { _id: { $in: conversationMessageId.map(id => mongoose.Types.ObjectId(id)) }, msgByUser Id: msgByUser Id },
+      {
+        _id: {
+          $in: conversationMessageId.map((id) => mongoose.Types.ObjectId(id)),
+        },
+        msgByUserId: msgByUserId,
+      },
       { $set: { seen: true } }
-  );
+    );
 
     //send conversation
     const conversationSender = await getConversation(user?._id?.toString());
