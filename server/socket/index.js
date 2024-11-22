@@ -1,10 +1,10 @@
 const express = require("express");
 const { Server } = require("socket.io");
 const http = require("http");
-const getUserDetailsFromToken = require("../helper/getuserDetails");
-const UserModel = require("../model/Usermodel");
-const { ConversationModel, MessageModel } = require("../model/Conversation");
-const getConversation = require("../helper/getconversation");
+const getUserDetailsFromToken = require("../helper/getuserDetails.js");
+const UserModel = require("../model/Usermodel.js");
+const { ConversationModel, MessageModel } = require("../model/Conversation.js");
+const getConversation = require("../helper/getconversation.js");
 
 const app = express();
 
@@ -31,8 +31,14 @@ io.on("connection", async (socket) => {
   const user = await getUserDetailsFromToken(token);
 
   //create a room
-  socket.join(user?._id.toString());
+  socket.join(user?._id?.toString());
   onlineUser.add(user?._id?.toString());
+  if (user && user._id) {
+    socket.join(user._id?.toString());
+    onlineUser.add(user._id?.toString());
+  } else {
+    console.error("Error: User or User ID is undefined", { user });
+  }
 
   io.emit("onlineUser", Array.from(onlineUser));
 
