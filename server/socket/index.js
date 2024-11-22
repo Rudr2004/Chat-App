@@ -34,7 +34,8 @@ io.on("connection", async (socket) => {
   socket.join(user?._id?.toString());
   onlineUser.add(user?._id?.toString());
   if (user && user._id) {
-    socket.join(user._id?.toString());
+    const userId = mongoose.Types.ObjectId(user._id);
+    socket.join(userId.toString());
     onlineUser.add(user._id?.toString());
   } else {
     console.error("Error: User or User ID is undefined", { user });
