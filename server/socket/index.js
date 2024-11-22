@@ -35,7 +35,7 @@ io.on("connection", async (socket) => {
   socket.join(user?._id?.toString());
   onlineUser.add(user?._id?.toString());
   if (user && user._id) {
-    const userId = mongoose.Types.ObjectId(user._id);
+    const userId = new mongoose.Types.ObjectId(user._id);
     socket.join(userId.toString());
     onlineUser.add(user._id?.toString());
   } else {
