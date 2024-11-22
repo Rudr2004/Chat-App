@@ -11,7 +11,7 @@ const allowedOrigins = ["http://localhost:5173", "https://msg-app.netlify.app"];
 app.use(
   cors({
     origin: allowedOrigins,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    methods: ["GET", "POST"],
     credentials: true,
   })
 );
