@@ -79,74 +79,77 @@ io.on("connection", async (socket) => {
   });
 
   // New message
-socket.on("new message", async (data) => {
-  // Validate sender and receiver IDs
-  if (!ObjectId.isValid(data.sender) || !ObjectId.isValid(data.receiver)) {
-    console.error(
-      "Invalid sender or receiver ID format:",
-      data.sender,
-      data.receiver
-    );
-    return; // Exit if invalid
-  }
-
-  // Check if a conversation already exists between the sender and receiver
-  let conversation = await ConversationModel.findOne({
-    $or: [
-      { sender: ObjectId(data.sender), receiver: ObjectId(data.receiver) },
-      { sender: ObjectId(data.receiver), receiver: ObjectId(data.sender) },
-    ],
-  });
-
-  // If conversation is not available, create a new one
-  if (!conversation) {
-    const createConversation = new ConversationModel({
-      sender: data.sender,
-      receiver: data.receiver,
-    });
-    conversation = await createConversation.save();
-  }
-
-  // Create a new message instance
-  const message = new MessageModel({
-    text: data.text,
-    imageUrl: data.imageUrl,
-    videoUrl: data.videoUrl,
-    msgByUser Id: data.msgByUser Id,
-  });
-  
-  // Save the message to the database
-  const saveMessage = await message.save();
-
-  // Update the conversation to include the new message
-  await ConversationModel.updateOne(
-    { _id: conversation._id },
-    {
-      $push: { messages: saveMessage._id },
+  socket.on("new message", async (data) => {
+    // Validate sender and receiver IDs
+    if (!ObjectId.isValid(data.sender) || !ObjectId.isValid(data.receiver)) {
+      console.error(
+        "Invalid sender or receiver ID format:",
+        data.sender,
+        data.receiver
+      );
+      return; // Exit if invalid
     }
-  );
 
-  // Retrieve the updated conversation messages
-  const getConversationMessage = await ConversationModel.findOne({
-    $or: [
-      { sender: data.sender, receiver: data.receiver },
-      { sender: data.receiver, receiver: data.sender },
-    ],
-  })
-    .populate("messages")
-    .sort({ updatedAt: -1 });
+    // Check if a conversation already exists between the sender and receiver
+    let conversation = await ConversationModel.findOne({
+      $or: [
+        { sender: ObjectId(data.sender), receiver: ObjectId(data.receiver) },
+        { sender: ObjectId(data.receiver), receiver: ObjectId(data.sender) },
+      ],
+    });
 
-  // Emit the updated messages to both the sender and receiver
-  io.to(data.sender).emit("message", getConversationMessage?.messages || []);
-  io.to(data.receiver).emit("message", getConversationMessage?.messages || []);
+    // If conversation is not available, create a new one
+    if (!conversation) {
+      const createConversation = new ConversationModel({
+        sender: data.sender,
+        receiver: data.receiver,
+      });
+      conversation = await createConversation.save();
+    }
 
-  // Send updated conversation to both users
-  const conversationSender = await getConversation(data.sender);
-  const conversationReceiver = await getConversation(data.receiver);
+    // Create a new message instance
+    const message = new MessageModel({
+      text: data.text,
+      imageUrl: data.imageUrl,
+      videoUrl: data.videoUrl,
+      msgByUserId: data.msgByUserId,
+    });
 
-  io.to(data.sender).emit("conversation", conversationSender);
-  io.to(data.receiver).emit("conversation", conversationReceiver);
-});
+    // Save the message to the database
+    const saveMessage = await message.save();
+
+    // Update the conversation to include the new message
+    await ConversationModel.updateOne(
+      { _id: conversation._id },
+      {
+        $push: { messages: saveMessage._id },
+      }
+    );
+
+    // Retrieve the updated conversation messages
+    const getConversationMessage = await ConversationModel.findOne({
+      $or: [
+        { sender: data.sender, receiver: data.receiver },
+        { sender: data.receiver, receiver: data.sender },
+      ],
+    })
+      .populate("messages")
+      .sort({ updatedAt: -1 });
+
+    // Emit the updated messages to both the sender and receiver
+    io.to(data.sender).emit("message", getConversationMessage?.messages || []);
+    io.to(data.receiver).emit(
+      "message",
+      getConversationMessage?.messages || []
+    );
+
+    // Send updated conversation to both users
+    const conversationSender = await getConversation(data.sender);
+    const conversationReceiver = await getConversation(data.receiver);
+
+    io.to(data.sender).emit("conversation", conversationSender);
+    io.to(data.receiver).emit("conversation", conversationReceiver);
+  });
 
   // Sidebar
   socket.on("sidebar", async (currentUserId) => {
