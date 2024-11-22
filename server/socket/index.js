@@ -5,6 +5,7 @@ const getUserDetailsFromToken = require("../helper/getuserDetails.js");
 const UserModel = require("../model/Usermodel.js");
 const { ConversationModel, MessageModel } = require("../model/Conversation.js");
 const getConversation = require("../helper/getconversation.js");
+const mongoose = require("mongoose");
 
 const app = express();
 
