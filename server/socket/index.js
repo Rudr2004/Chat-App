@@ -5,7 +5,7 @@ const getUserDetailsFromToken = require("../helper/getuserDetails.js");
 const UserModel = require("../model/Usermodel.js");
 const { ConversationModel, MessageModel } = require("../model/Conversation.js");
 const getConversation = require("../helper/getconversation.js");
-
+const { v4: uuidv4 } = require("uuid");
 const app = express();
 
 // Create HTTP server and Socket.IO server
@@ -99,7 +99,7 @@ io.on("connection", async (socket) => {
       text: data.text,
       imageUrl: data.imageUrl,
       videoUrl: data.videoUrl,
-      msgByUserId: data?.msgByUserId, // Ensure this is a UUID string
+      msgByUserId: uuidv4(), // Ensure this is a UUID string
     });
     const savedMessage = await message.save();
 
