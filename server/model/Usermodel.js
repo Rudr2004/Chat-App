@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
+const { v4: uuidv4 } = require("uuid"); // Import the UUID function
 
 const userSchema = new mongoose.Schema(
   {
+    _id: {
+      type: String,
+      default: uuidv4, // Set default value to a new UUID
+    },
     name: {
       type: String,
       required: [true, "provide name"],
@@ -25,6 +30,6 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const UserModel = mongoose.model("User", userSchema);
+const UserModel = mongoose.model("User ", userSchema);
 
 module.exports = UserModel;

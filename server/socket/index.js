@@ -17,7 +17,7 @@ const io = new Server(server, {
   },
 });
 
-//online user
+// Online user
 const onlineUser = new Set();
 
 io.on("connection", async (socket) => {
@@ -25,14 +25,14 @@ io.on("connection", async (socket) => {
 
   const token = socket.handshake.auth.token;
 
-  //current user details
+  // Current user details
   const user = await getUserDetailsFromToken(token);
 
-  //create a room
+  // Create a room
   socket.join(user?._id);
-  onlineUser.add(user?._id?.toString());
+  onlineUser.add(user?._id);
 
-  io.emit("onlineUser", Array.from(onlineUser));
+  io.emit("onlineUser ", Array.from(onlineUser));
 
   socket.on("message-page", async (userId) => {
     console.log("userId", userId);
@@ -43,11 +43,11 @@ io.on("connection", async (socket) => {
       name: userDetails?.name,
       email: userDetails?.email,
       profile_pic: userDetails?.profile_pic,
-      online: onlineUser.has(user._id),
+      online: onlineUser.has(userId),
     };
     socket.emit("message-user", payload);
 
-    //get previous message
+    // Get previous message
     const getConversationMessage = await ConversationModel.findOne({
       $or: [
         { sender: user?._id, receiver: userId },
@@ -60,10 +60,9 @@ io.on("connection", async (socket) => {
     socket.emit("message", getConversationMessage?.messages || []);
   });
 
-  //new message
+  // New message
   socket.on("new message", async (data) => {
-    //check conversation is available both user
-
+    // Check conversation is available for both users
     let conversation = await ConversationModel.findOne({
       $or: [
         { sender: data?.sender, receiver: data?.receiver },
@@ -71,9 +70,9 @@ io.on("connection", async (socket) => {
       ],
     });
 
-    //if conversation is not available
+    // If conversation is not available
     if (!conversation) {
-      const createConversation = await ConversationModel({
+      const createConversation = new ConversationModel({
         sender: data?.sender,
         receiver: data?.receiver,
       });
@@ -84,11 +83,11 @@ io.on("connection", async (socket) => {
       text: data.text,
       imageUrl: data.imageUrl,
       videoUrl: data.videoUrl,
-      msgByUserId: data?.msgByUserId,
+      msgByUserId: data?.msgByUserId, // Ensure this is a UUID string
     });
     const saveMessage = await message.save();
 
-    const updateConversation = await ConversationModel.updateOne(
+    await ConversationModel.updateOne(
       { _id: conversation?._id },
       {
         $push: { messages: saveMessage?._id },
@@ -110,7 +109,7 @@ io.on("connection", async (socket) => {
       getConversationMessage?.messages || []
     );
 
-    //send conversation
+    // Send conversation
     const conversationSender = await getConversation(data?.sender);
     const conversationReceiver = await getConversation(data?.receiver);
 
@@ -118,7 +117,7 @@ io.on("connection", async (socket) => {
     io.to(data?.receiver).emit("conversation", conversationReceiver);
   });
 
-  //sidebar
+  // Sidebar
   socket.on("sidebar", async (currentUserId) => {
     console.log("current user", currentUserId);
 
@@ -137,22 +136,22 @@ io.on("connection", async (socket) => {
 
     const conversationMessageId = conversation?.messages || [];
 
-    const updateMessages = await MessageModel.updateMany(
+    await MessageModel.updateMany(
       { _id: { $in: conversationMessageId }, msgByUserId: msgByUserId },
       { $set: { seen: true } }
     );
 
-    //send conversation
-    const conversationSender = await getConversation(user?._id?.toString());
+    // Send conversation
+    const conversationSender = await getConversation(user?._id);
     const conversationReceiver = await getConversation(msgByUserId);
 
-    io.to(user?._id?.toString()).emit("conversation", conversationSender);
+    io.to(user?._id).emit("conversation", conversationSender);
     io.to(msgByUserId).emit("conversation", conversationReceiver);
   });
 
-  //disconnect
+  // Disconnect
   socket.on("disconnect", () => {
-    onlineUser.delete(user?._id?.toString());
+    onlineUser.delete(user?._id);
     console.log("disconnect user ", socket.id);
   });
 });

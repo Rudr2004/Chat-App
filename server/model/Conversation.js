@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
+const { v4: uuidv4 } = require("uuid"); // Import the UUID function
 
 const messageSchema = new mongoose.Schema(
   {
+    _id: {
+      type: String,
+      default: uuidv4, // Set default value to a new UUID
+    },
     text: {
       type: String,
       default: "",
@@ -19,9 +24,9 @@ const messageSchema = new mongoose.Schema(
       default: false,
     },
     msgByUserId: {
-      type: mongoose.Schema.ObjectId,
+      type: String, // Change this to String to accommodate UUIDs
       required: true,
-      ref: "User",
+      ref: "User ",
     },
   },
   {
@@ -31,19 +36,23 @@ const messageSchema = new mongoose.Schema(
 
 const conversationSchema = new mongoose.Schema(
   {
+    _id: {
+      type: String,
+      default: uuidv4, // Set default value to a new UUID
+    },
     sender: {
-      type: mongoose.Schema.ObjectId,
+      type: String, // Change this to String to accommodate UUIDs
       required: true,
-      ref: "User",
+      ref: "User ",
     },
     receiver: {
-      type: mongoose.Schema.ObjectId,
+      type: String, // Change this to String to accommodate UUIDs
       required: true,
-      ref: "User",
+      ref: "User ",
     },
     messages: [
       {
-        type: mongoose.Schema.ObjectId,
+        type: String, // Change this to String to accommodate UUIDs
         ref: "Message",
       },
     ],
