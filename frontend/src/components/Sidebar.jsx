@@ -1,3 +1,4 @@
+
 import  { useEffect, useState } from 'react'
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import { FaUserPlus } from "react-icons/fa";
@@ -5,13 +6,13 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { BiLogOut } from "react-icons/bi";
 import Avatar from './Avtar.jsx'
 import { useDispatch, useSelector } from 'react-redux';
-import EditUserDetails from './EditUserDetails';
-//import Divider from './Divider.jsx';
+import EditUserDetails from './Edituserdetails.jsx';
+//import Divider from './Divider';
 import { FiArrowUpLeft } from "react-icons/fi";
-import SearchUser from './SearchUser';
+import SearchUser from './SearchUser.jsx';
 import { FaImage } from "react-icons/fa6";
 import { FaVideo } from "react-icons/fa6";
-import { logout } from '../redux/userSlice';
+import { logout } from '../redux/userSlice.jsx';
 
 const Sidebar = () => {
     const user = useSelector(state => state?.user)
