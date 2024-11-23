@@ -43,7 +43,7 @@ io.on("connection", async (socket) => {
       name: userDetails?.name,
       email: userDetails?.email,
       profile_pic: userDetails?.profile_pic,
-      online: onlineUser.has(userId),
+      online: onlineUser.has(user._id),
     };
     socket.emit("message-user", payload);
 
