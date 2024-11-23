@@ -1,3 +1,4 @@
+
 import axios from 'axios'
 import  { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,8 +17,7 @@ const Home = () => {
   console.log('user',user)
   const fetchUserDetails = async()=>{
     try {
-        
-        const URL = `${import.meta.env.VITE_BACKEND_URL}user-details`
+        const URL = `${import.meta.env.VITE_BACKEND_URL}/user-details`
         const response = await axios({
           url : URL,
           withCredentials : true
@@ -41,7 +41,8 @@ const Home = () => {
 
   /***socket connection */
   useEffect(()=>{
-    const socketConnection = io(`${import.meta.env.VITE_BACKEND_URL}`,{
+    const URL = `${import.meta.env.VITE_BACKEND_URL}`
+    const socketConnection = io(URL,{
       auth : {
         token : localStorage.getItem('token')
       },

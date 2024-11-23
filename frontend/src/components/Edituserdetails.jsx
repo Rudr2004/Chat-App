@@ -64,7 +64,7 @@ const EditUserDetails = ({ onClose, user }) => {
         e.preventDefault();
         e.stopPropagation();
         try {
-            const URL = `${import.meta.env.VITE_BACKEND_URL}update-user`;
+            const URL = `${import.meta.env.VITE_BACKEND_URL}/update-user`;
             const response = await axios.post(URL, data, { withCredentials: true });
 
             console.log('response', response);
