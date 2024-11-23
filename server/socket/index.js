@@ -45,7 +45,7 @@ io.on("connection", async (socket) => {
   });
 });
 
-socket.on("message-page", async (userId) => {
+io.on("message-page", async (userId) => {
   console.log("userId", userId);
   const userDetails = await UserModel.findById(userId).select("-password");
 
