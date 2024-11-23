@@ -1,7 +1,7 @@
 const express = require("express");
 const { Server } = require("socket.io");
 const http = require("http");
-const getUser DetailsFromToken = require("../helper/getuserDetails.js");
+const getUserDetailsFromToken = require("../helper/getuserDetails.js");
 const UserModel = require("../model/Usermodel.js");
 const { ConversationModel, MessageModel } = require("../model/Conversation.js");
 const getConversation = require("../helper/getconversation.js");
@@ -26,7 +26,7 @@ io.on("connection", async (socket) => {
   const token = socket.handshake.auth.token;
 
   // Validate the token and get user details
-  const user = await getUser DetailsFromToken(token);
+  const user = await getUserDetailsFromToken(token);
   if (!user) {
     console.log("Invalid token, disconnecting...");
     socket.disconnect();
@@ -36,7 +36,7 @@ io.on("connection", async (socket) => {
   // Join the user to their room and mark them as online
   socket.join(user._id);
   onlineUsers.add(user._id);
-  
+
   console.log("Online users:", Array.from(onlineUsers));
   io.emit("onlineUser ", Array.from(onlineUsers)); // Emit updated online users
 
@@ -99,7 +99,7 @@ io.on("connection", async (socket) => {
       text: data.text,
       imageUrl: data.imageUrl,
       videoUrl: data.videoUrl,
-      msgByUser Id: data?.msgByUser Id, // Ensure this is a UUID string
+      msgByUserId: data?.msgByUserId, // Ensure this is a UUID string
     });
     const savedMessage = await message.save();
 
@@ -121,8 +121,14 @@ io.on("connection", async (socket) => {
       .populate("messages")
       .sort({ updatedAt: -1 });
 
-    io.to(data?.sender).emit("message", updatedConversationMessage?.messages || []);
-    io.to(data?.receiver).emit("message", updatedConversationMessage?.messages || []);
+    io.to(data?.sender).emit(
+      "message",
+      updatedConversationMessage?.messages || []
+    );
+    io.to(data?.receiver).emit(
+      "message",
+      updatedConversationMessage?.messages || []
+    );
 
     // Send updated conversations to both users
     const conversationSender = await getConversation(data?.sender);
@@ -132,42 +138,40 @@ io.on("connection", async (socket) => {
     io.to(data?.receiver).emit("conversation", conversationReceiver);
   });
 
-    // Handle sidebar request
-    socket.on("sidebar", async (currentUser Id) => {
-      console.log("current user", currentUser Id);
-      const conversation = await getConversation(currentUser Id);
-      socket.emit("conversation", conversation);
-    });
-  
-    // Handle message seen status
-    socket.on("seen", async (msgByUser Id) => {
-      let conversation = await ConversationModel.findOne({
-        $or: [
-          { sender: user._id, receiver: msgByUser Id },
-          { sender: msgByUser Id, receiver: user._id },
-        ],
-      });
-  
-      const conversationMessageId = conversation?.messages || [];
-  
-      await MessageModel.updateMany(
-        { _id: { $in: conversationMessageId }, msgByUser Id: msgByUser Id },
-        { $set: { seen: true } }
-      );
-  
-      // Send updated conversations to both users
-      const conversationSender = await getConversation(user._id);
-      const conversationReceiver = await getConversation(msgByUser Id);
-  
-      io.to(user._id).emit("conversation", conversationSender);
-      io.to(msgByUser Id).emit("conversation", conversationReceiver);
-    });
-  
+  // Handle sidebar request
+  socket.on("sidebar", async (currentUserId) => {
+    console.log("current user", currentUserId);
+    const conversation = await getConversation(currentUserId);
+    socket.emit("conversation", conversation);
   });
-  
-  // Export the app and server
-  module.exports = {
-    app,
-    server,
-  };
- 
+
+  // Handle message seen status
+  socket.on("seen", async (msgByUserId) => {
+    let conversation = await ConversationModel.findOne({
+      $or: [
+        { sender: user._id, receiver: msgByUserId },
+        { sender: msgByUserId, receiver: user._id },
+      ],
+    });
+
+    const conversationMessageId = conversation?.messages || [];
+
+    await MessageModel.updateMany(
+      { _id: { $in: conversationMessageId }, msgByUserId: msgByUserId },
+      { $set: { seen: true } }
+    );
+
+    // Send updated conversations to both users
+    const conversationSender = await getConversation(user._id);
+    const conversationReceiver = await getConversation(msgByUserId);
+
+    io.to(user._id).emit("conversation", conversationSender);
+    io.to(msgByUserId).emit("conversation", conversationReceiver);
+  });
+});
+
+// Export the app and server
+module.exports = {
+  app,
+  server,
+};
