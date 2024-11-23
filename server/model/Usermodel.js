@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    onlineStatus: {
+      type: Boolean,
+      default: false, // Default to offline
+    },
   },
   {
     timestamps: true,
