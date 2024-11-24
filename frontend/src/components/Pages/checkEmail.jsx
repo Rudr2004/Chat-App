@@ -8,7 +8,7 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa6";
 import { FaImage } from "react-icons/fa6";
 import { FaVideo } from "react-icons/fa6";
-import uploadFile from '../helpers/uploadFile';
+import uploadFile from '../../helper/uploadfile.jsx';
 import { IoClose } from "react-icons/io5";
 import Loading from '../Circularloading.jsx';
 import backgroundImage from '../assets/wallapaper.jpeg'
