@@ -35,7 +35,7 @@ io.on("connection", async (socket) => {
 
   // Join the user to their room and mark them as online
   socket.join(user._id);
-  onlineUsers.add(user._id);
+  onlineUsers.add(user._id.toString());
 
   console.log("Online users:", Array.from(onlineUsers));
   io.emit("onlineUser ", Array.from(onlineUsers)); // Emit updated online users
