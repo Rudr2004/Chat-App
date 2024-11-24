@@ -33,16 +33,24 @@ io.on("connection", async (socket) => {
     return;
   }
 
+  // Generate a UUID for the user's session
+  const userSessionId = uuidv4();
+
   // Join the user to their room and mark them as online
   socket.join(user._id);
-  onlineUsers.add(user._id.toString());
+  onlineUsers.add({ userId: user._id, sessionId: userSessionId });
 
   console.log("Online users:", Array.from(onlineUsers));
   io.emit("onlineUser ", Array.from(onlineUsers)); // Emit updated online users
 
   // Handle user disconnection
   socket.on("disconnect", () => {
-    onlineUsers.delete(user._id);
+    // Remove the user using their userId and sessionId
+    onlineUsers.forEach((onlineUser) => {
+      if (onlineUser.userId === user._id) {
+        onlineUsers.delete(onlineUser);
+      }
+    });
     console.log("Disconnected user:", user._id);
     console.log("Updated online users:", Array.from(onlineUsers));
     io.emit("onlineUser ", Array.from(onlineUsers)); // Emit updated online users
@@ -58,7 +66,7 @@ io.on("connection", async (socket) => {
       name: userDetails?.name,
       email: userDetails?.email,
       profile_pic: userDetails?.profile_pic,
-      online: onlineUsers.has(userId),
+      online: Array.from(onlineUsers).some((user) => user.userId === userId),
     };
     socket.emit("message-user", payload);
 
