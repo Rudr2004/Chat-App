@@ -33,7 +33,7 @@ io.on("connection", async (socket) => {
 
   //create a room
   socket.join(user?._id);
-  onlineUser.add(user?._id?);
+  onlineUser.add(user?._id);
 
   io.emit("onlineUser", Array.from(onlineUser));
 
