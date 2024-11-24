@@ -11,7 +11,7 @@ import { FaVideo } from "react-icons/fa6";
 import uploadFile from '../../helper/uploadfile.jsx';
 import { IoClose } from "react-icons/io5";
 import Loading from '../Circularloading.jsx';
-import backgroundImage from '../assets/wallapaper.jpeg'
+import backgroundImage from '../../assets/wallapaper.jpeg'
 import { IoMdSend } from "react-icons/io";
 import moment from 'moment'
 
