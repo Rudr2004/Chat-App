@@ -1,13 +1,13 @@
-import  { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 //import { IoClose } from "react-icons/io5";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-//import uploadFile from '../helper/uploadfile.jsx';
+//import uploadFile from '../../helper/uploadfile.jsx';
 import axios from 'axios'
 import toast from 'react-hot-toast';
 //import { PiUserCircle } from "react-icons/pi";
 import Avatar from '../Avtar.jsx';
 import { useDispatch } from 'react-redux';
-import { setToken} from '../../redux/userSlice.jsx';
+import { setToken, setUser } from '../../redux/userSlice.jsx';
 
 const CheckPasswordPage = () => {
   const [data,setData] = useState({
@@ -39,7 +39,7 @@ const CheckPasswordPage = () => {
     e.preventDefault()
     e.stopPropagation()
 
-    const URL = `${import.meta.env.VITE_BACKEND_URL}/password`
+    const URL = `${import.meta.env.VITE_BACKEND_URL}api/password`
 
     try {
         const response = await axios({
@@ -61,7 +61,7 @@ const CheckPasswordPage = () => {
             setData({
               password : "",
             })
-            navigate('/home')
+            navigate('/')
         }
     } catch (error) {
         toast.error(error?.response?.data?.message)

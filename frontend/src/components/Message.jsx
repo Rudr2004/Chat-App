@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-key */
 
-import { useEffect, useRef, useState } from 'react'
+import  { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
 import Avatar from './Avtar.jsx'

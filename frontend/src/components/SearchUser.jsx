@@ -1,4 +1,3 @@
-
 import  { useEffect, useState } from 'react'
 import { IoSearchOutline } from "react-icons/io5";
 import Loading from './Circularloading.jsx';
@@ -14,7 +13,7 @@ const SearchUser = ({onClose}) => {
 
 
     const handleSearchUser = async()=>{
-        const URL = `${import.meta.env.VITE_BACKEND_URL}/search-user`
+        const URL = `${import.meta.env.VITE_BACKEND_URL}api/search-user`
         try {
             setLoading(true)
             const response = await axios.post(URL,{
@@ -33,7 +32,7 @@ const SearchUser = ({onClose}) => {
         handleSearchUser()
     },[search])
 
-    console.log("searchUser",searchUser)
+   // console.log("searchUser",searchUser)
   return (
     <div className='fixed top-0 bottom-0 left-0 right-0 bg-slate-700 bg-opacity-40 p-2 z-10'>
         <div className='w-full max-w-lg mx-auto mt-10'>
@@ -52,7 +51,7 @@ const SearchUser = ({onClose}) => {
             </div>
 
             {/**display search user */}
-            <div className='bg-white mt-2 w-full p-4 rounded'>
+            <div className='bg-white mt-2 w-full p-4 rounded h-full max-h-[70vh] overflow-scroll'>
                 {/**no user found */}
                 {
                     searchUser.length === 0 && !loading && (

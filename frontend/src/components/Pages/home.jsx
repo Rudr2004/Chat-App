@@ -1,6 +1,6 @@
 
 import axios from 'axios'
-import  { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { logout, setOnlineUser, setSocketConnection, setUser } from '../../redux/userSlice.jsx'
@@ -14,25 +14,25 @@ const Home = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  console.log('user',user)
+ // console.log('user',user)
   const fetchUserDetails = async()=>{
     try {
-        const URL = `${import.meta.env.VITE_BACKEND_URL}/user-details`
+        const URL = `${import.meta.env.VITE_BACKEND_URL}api/user-details`
         const response = await axios({
           url : URL,
           withCredentials : true
         })
 
-        dispatch(setUser(response.data.data))
+        dispatch(setUser(response?.data?.data))
 
         if(response.data.data.logout){
             dispatch(logout())
             navigate("/email")
         }
-        console.log("current user Details",response)
-    } catch (error) {
-        console.log("error",error)
-    }
+       // console.log("current user Details",response)
+    }  catch  {
+       // console.log("error",error)
+    } 
   }
 
   useEffect(()=>{
@@ -41,15 +41,14 @@ const Home = () => {
 
   /***socket connection */
   useEffect(()=>{
-    const URL = `${import.meta.env.VITE_BACKEND_URL}`
-    const socketConnection = io(URL,{
+    const socketConnection = io(import.meta.env.VITE_BACKEND_URL,{
       auth : {
         token : localStorage.getItem('token')
       },
     })
 
     socketConnection.on('onlineUser',(data)=>{
-      console.log(data)
+     // console.log(data)
       dispatch(setOnlineUser(data))
     })
 

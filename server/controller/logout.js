@@ -1,10 +1,8 @@
 async function logout(request, response) {
   try {
     const cookieOptions = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      domain: "https://chat-app-4cyr.onrender.com",
+      http: true,
+      secure: true,
     };
 
     return response.cookie("token", "", cookieOptions).status(200).json({

@@ -1,20 +1,21 @@
 const mongoose = require("mongoose");
-require("dotenv").config();
-async function connect() {
+
+async function connectDB() {
   try {
-    const URL =
-      "mongodb+srv://rudrajan24:rudrajan24@chat-app.7sm6c.mongodb.net/?retryWrites=true";
-    await mongoose.connect(URL);
+    await mongoose.connect(process.env.MONGODB_URI);
+
     const connection = mongoose.connection;
+
     connection.on("connected", () => {
-      console.log("Connected");
+      console.log("Connect to DB");
     });
+
     connection.on("error", (error) => {
-      console.log("Error to connect", error);
+      console.log("Something is wrong in mongodb ", error);
     });
   } catch (error) {
-    console.log("Not Connected", error);
+    console.log("Something is wrong ", error);
   }
 }
 
-module.exports = connect;
+module.exports = connectDB;

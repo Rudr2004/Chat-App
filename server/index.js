@@ -1,35 +1,34 @@
 const express = require("express");
 const cors = require("cors");
-const connect = require("./config/db.js");
+require("dotenv").config();
+const connectDB = require("./config/db.js");
 const router = require("./router/index.js");
 const cookiesParser = require("cookie-parser");
 const { app, server } = require("./socket/index.js");
-require("dotenv").config();
 
-//const app = express();
-const allowedOrigins = ["http://localhost:5173", "https://msg-app.netlify.app"];
+// const app = express()
 app.use(
   cors({
-    origin: allowedOrigins,
-    methods: ["GET", "POST"],
+    origin: ["http://localhost:5173", "https://msg-app.netlify.app"],
     credentials: true,
   })
 );
-
 app.use(express.json());
 app.use(cookiesParser());
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.json({ message: "Server is running on " + PORT });
+app.get("/", (request, response) => {
+  response.json({
+    message: "Server running at " + PORT,
+  });
 });
 
-//Api End Points
-app.use(router);
+//api endpoints
+app.use("/api", router);
 
-connect().then(() => {
+connectDB().then(() => {
   server.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`);
+    //  console.log("server running at " + PORT);
   });
 });

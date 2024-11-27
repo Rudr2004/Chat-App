@@ -1,4 +1,3 @@
-
 import  { useState } from 'react'
 import { IoClose } from "react-icons/io5";
 import { Link, useNavigate } from 'react-router-dom';
@@ -51,7 +50,7 @@ const RegisterPage = () => {
     e.preventDefault()
     e.stopPropagation()
 
-    const URL = `${import.meta.env.VITE_BACKEND_URL}/register`
+    const URL = `${import.meta.env.VITE_BACKEND_URL}api/register`
 
     try {
         const response = await axios.post(URL,data)

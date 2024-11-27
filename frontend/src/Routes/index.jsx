@@ -1,6 +1,6 @@
 
 import { createBrowserRouter } from "react-router-dom";
-import App from "../App.jsx";
+import App from "../App";
 import RegisterPage from "../components/Pages/register.jsx";
 import CheckEmailPage from "../components/Pages/checkEmail.jsx";
 import CheckPasswordPage from "../components/Pages/checkPassword.jsx";

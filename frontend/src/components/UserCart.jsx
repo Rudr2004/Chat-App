@@ -2,11 +2,10 @@
 //import React from 'react'
 import Avatar from './Avtar.jsx'
 import { Link } from 'react-router-dom'
-import mongoose from "mongoose"
 
 const UserSearchCard = ({user, onClose}) => {
   return (
-    <Link to={"/home"+user?._id} onClick={onClose} className='flex items-center gap-3 p-2 lg:p-4 border border-transparent border-b-slate-200 hover:border hover:border-primary rounded cursor-pointer'>
+    <Link to={"/"+user?._id} onClick={onClose} className='flex items-center gap-3 p-2 lg:p-4 border border-transparent border-b-slate-200 hover:border hover:border-primary rounded cursor-pointer'>
         <div>
             <Avatar
                 width={50}

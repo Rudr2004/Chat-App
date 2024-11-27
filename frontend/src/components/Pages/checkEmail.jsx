@@ -1,7 +1,7 @@
 import  { useState } from 'react'
 //import { IoClose } from "react-icons/io5";
 import { Link, useNavigate } from 'react-router-dom';
-//import uploadFile from '../../helper/uploadfile.jsx';
+//import uploadFile from '../helper/uploadfile.jsx';
 import axios from 'axios'
 import toast from 'react-hot-toast';
 import { PiUserCircle } from "react-icons/pi";
@@ -27,7 +27,7 @@ const CheckEmailPage = () => {
     e.preventDefault()
     e.stopPropagation()
 
-    const URL = `${import.meta.env.VITE_BACKEND_URL}/email`
+    const URL = `${import.meta.env.VITE_BACKEND_URL}api/email`
 
     try {
         const response = await axios.post(URL,data)
