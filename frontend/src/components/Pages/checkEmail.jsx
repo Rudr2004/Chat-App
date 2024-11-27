@@ -86,6 +86,7 @@ const CheckEmailPage = () => {
           </form>
 
           <p className='my-3 text-center'>New User ? <Link to={"/register"} className='hover:text-primary font-semibold'>Register</Link></p>
+          <p>&#9888;Make Sure Your Browser version is up-to-date. Use browser like <b>Mozila Firefox</b></p>
         </div>
     </div>
   )
